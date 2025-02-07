@@ -1,0 +1,17 @@
+export const welcomeEmailTemplate = (userName) => {
+  return {
+    subject: "Welcome to Our Service!",
+    text: `Welcome, ${userName}!
+  
+  Thank you for verifying your email. We are excited to have you on board.
+  
+  Enjoy our service!`,
+    html: `
+        <div style="font-family: Arial, sans-serif; color: #333; line-height: 1.5;">
+          <h2 style="color: #007BFF;">Welcome, ${userName}!</h2>
+          <p>Thank you for verifying your email. We are excited to have you on board.</p>
+          <p>Enjoy our service!</p>
+        </div>
+      `,
+  };
+};
