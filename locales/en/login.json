@@ -1,0 +1,6 @@
+{
+  "invalidCredentials": "Invalid email or password.",
+  "emailNotVerified": "Email not verified.",
+  "loginSuccessful": "Login successful.",
+  "serverError": "Server error."
+}

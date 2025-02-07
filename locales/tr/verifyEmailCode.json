@@ -1,0 +1,8 @@
+{
+  "userNotFound": "Kullanıcı bulunamadı.",
+  "emailAlreadyVerified": "E-posta zaten doğrulandı.",
+  "incorrectCode": "Yanlış kod.",
+  "codeExpired": "Kod süresi dolmuş, lütfen yeni bir kod isteyin.",
+  "emailVerifiedSuccessfully": "E-posta başarıyla doğrulandı. Hoş geldiniz e-postası gönderildi!",
+  "serverError": "Sunucu hatası."
+}

@@ -1,12 +1,9 @@
-export const verificationEmailTemplate = (code) => {
-  return {
-    text: `Your 6-digit email verification code is: ${code}`,
-    html: `
-        <div style="font-family: Arial, sans-serif; font-size: 16px; color: #333; line-height: 1.5;">
-          <p>Your <strong style="color: #007BFF;">6-digit</strong> email verification code is:</p>
-          <p style="font-size: 20px; font-weight: bold; margin: 10px 0;">${code}</p>
-          <p>Please enter this code to verify your email address.</p>
-        </div>
-      `,
-  };
+import i18next from "../config/i18n.js";
+
+export const verificationEmailTemplate = (code, lng = "tr") => {
+  const subject = i18next.getFixedT(lng, "emailVerification")("subject");
+  const text = i18next.getFixedT(lng, "emailVerification")("text", { code });
+  const html = i18next.getFixedT(lng, "emailVerification")("html", { code });
+
+  return { subject, text, html };
 };

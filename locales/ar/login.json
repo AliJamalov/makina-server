@@ -1,0 +1,6 @@
+{
+  "invalidCredentials": "البريد الإلكتروني أو كلمة المرور غير صحيحة.",
+  "emailNotVerified": "البريد الإلكتروني غير موثوق.",
+  "loginSuccessful": "تم تسجيل الدخول بنجاح.",
+  "serverError": "خطأ في الخادم."
+}

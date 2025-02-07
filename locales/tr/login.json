@@ -1,0 +1,6 @@
+{
+  "invalidCredentials": "Geçersiz e-posta veya şifre.",
+  "emailNotVerified": "E-posta doğrulanmamış.",
+  "loginSuccessful": "Giriş başarılı.",
+  "serverError": "Sunucu hatası."
+}

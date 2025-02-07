@@ -1,15 +1,16 @@
-export const resetPasswordEmailTemplate = (resetUrl) => {
-  return {
-    text: `Вы получили это письмо, так как был сделан запрос на сброс пароля для вашей учетной записи.
-  
-  Перейдите по следующей ссылке для сброса пароля:
-  
-  ${resetUrl}
-  
-  Если вы не запрашивали сброс пароля, проигнорируйте это письмо.`,
-    html: `<p>Вы получили это письмо, так как был сделан запрос на сброс пароля для вашей учетной записи.</p>
-  <p>Перейдите по следующей ссылке для сброса пароля:</p>
-  <p><a href="${resetUrl}">${resetUrl}</a></p>
-  <p>Если вы не запрашивали сброс пароля, проигнорируйте это письмо.</p>`,
-  };
+import i18next from "../config/i18n.js";
+
+export const resetPasswordEmailTemplate = (resetUrl, lng = "tr") => {
+  const subject = i18next.getFixedT(
+    lng,
+    "resetPasswordEmailTemplate"
+  )("subject");
+  const text = i18next.getFixedT(lng, "resetPasswordEmailTemplate")("text", {
+    resetUrl,
+  });
+  const html = i18next.getFixedT(lng, "resetPasswordEmailTemplate")("html", {
+    resetUrl,
+  });
+
+  return { subject, text, html };
 };

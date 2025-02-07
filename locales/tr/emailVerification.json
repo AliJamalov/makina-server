@@ -1,0 +1,5 @@
+{
+  "subject": "E-posta Doğrulama",
+  "text": "Sizin 6 haneli e-posta doğrulama kodunuz: <p>{{code}}</p>",
+  "html": "<div style=\"font-family: Arial, sans-serif; font-size: 16px; color: #333; line-height: 1.5;\"><p>Sizin <strong style=\"color: #007BFF;\">6 haneli</strong> e-posta doğrulama kodunuz:</p><p style=\"font-size: 20px; font-weight: bold; margin: 10px 0;\">{{code}}</p><p>Lütfen e-posta adresinizi doğrulamak için bu kodu girin.</p></div>"
+}

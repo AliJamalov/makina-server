@@ -1,0 +1,5 @@
+{
+  "subject": "تحقق البريد الإلكتروني",
+  "text": "رمز التحقق من البريد الإلكتروني المكون من 6 أرقام الخاص بك هو: <p>{{code}}</p>",
+  "html": "<div style=\"font-family: Arial, sans-serif; font-size: 16px; color: #333; line-height: 1.5; direction: rtl; text-align: right;\"><p>رمز <strong style=\"color: #007BFF;\">التحقق المكون من 6 أرقام</strong> الخاص بك هو:</p><p style=\"font-size: 20px; font-weight: bold; margin: 10px 0;\">{{code}}</p><p>يرجى إدخال هذا الرمز للتحقق من عنوان بريدك الإلكتروني.</p></div>"
+}

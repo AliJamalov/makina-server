@@ -1,17 +1,15 @@
-export const welcomeEmailTemplate = (userName) => {
-  return {
-    subject: "Welcome to Our Service!",
-    text: `Welcome, ${userName}!
-  
-  Thank you for verifying your email. We are excited to have you on board.
-  
-  Enjoy our service!`,
-    html: `
-        <div style="font-family: Arial, sans-serif; color: #333; line-height: 1.5;">
-          <h2 style="color: #007BFF;">Welcome, ${userName}!</h2>
-          <p>Thank you for verifying your email. We are excited to have you on board.</p>
-          <p>Enjoy our service!</p>
-        </div>
-      `,
-  };
+import i18next from "../config/i18n.js";
+
+export const welcomeEmailTemplate = (userName, lng = "tr") => {
+  const subject = i18next.getFixedT(lng, "welcomeEmailTemplate")("subject", {
+    userName,
+  });
+  const text = i18next.getFixedT(lng, "welcomeEmailTemplate")("text", {
+    userName,
+  });
+  const html = i18next.getFixedT(lng, "welcomeEmailTemplate")("html", {
+    userName,
+  });
+
+  return { subject, text, html };
 };

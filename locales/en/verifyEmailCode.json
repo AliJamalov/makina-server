@@ -1,0 +1,8 @@
+{
+  "userNotFound": "User not found.",
+  "emailAlreadyVerified": "Email is already verified.",
+  "incorrectCode": "Incorrect code.",
+  "codeExpired": "Code has expired, please request a new one.",
+  "emailVerifiedSuccessfully": "Email successfully verified. Welcome email sent!",
+  "serverError": "Server error."
+}

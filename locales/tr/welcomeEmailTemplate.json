@@ -1,0 +1,5 @@
+{
+  "subject": "Hizmetimize Hoş Geldiniz!",
+  "text": "Hoş geldiniz, {{userName}}!\n\nE-posta adresinizi doğruladığınız için teşekkür ederiz. Ekibimize katıldığınız için heyecanlıyız.\n\nHizmetimizden keyif alın!",
+  "html": "<div style=\"font-family: Arial, sans-serif; color: #333; line-height: 1.5;\"><h2 style=\"color: #007BFF;\">Hoş geldiniz, {{userName}}!</h2><p>E-posta adresinizi doğruladığınız için teşekkür ederiz. Ekibimize katıldığınız için heyecanlıyız.</p><p>Hizmetimizden keyif alın!</p></div>"
+}

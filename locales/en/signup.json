@@ -1,0 +1,5 @@
+{
+  "missingFields": "Please fill in all required fields.",
+  "userExists": "A user with this email already exists.",
+  "success": "User successfully registered. Check your email to verify your account."
+}

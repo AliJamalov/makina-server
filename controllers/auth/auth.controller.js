@@ -1,60 +1,57 @@
 import bcrypt from "bcryptjs";
 import crypto from "crypto";
-import nodemailer from "nodemailer";
+
 import { generateTokenAndSetCookie } from "../../utils/generateTokenAndSetCookie.js";
-import sendVerificationCodeEmail from "../../utils/sendVerificationCodeEmail.js";
-import { resetPasswordEmailTemplate } from "../../templates/resetPasswordEmailTemplate.js";
-import { welcomeEmailTemplate } from "../../templates/welcomeEmailTemplate.js";
+import { sendVerificationCodeEmail } from "../../utils/sendEmails.js";
+import { sendWelcomeEmail } from "../../utils/sendEmails.js";
+import { sendResetPasswordEmail } from "../../utils/sendEmails.js";
+
 import { User } from "../../models/user.model.js";
+
+import i18next from "../../config/i18n.js";
 
 export const signup = async (req, res) => {
   try {
     const { email, password, name } = req.body;
+    const language = req.query.lng || "tr";
 
-    // Проверяем, что все обязательные поля заполнены
     if (!email || !password || !name) {
-      return res
-        .status(400)
-        .json({ message: "Заполните все обязательные поля" });
+      return res.status(400).json({
+        message: i18next.t("signup:missingFields", { lng: language }),
+      });
     }
 
-    // Проверяем, существует ли уже пользователь с таким email
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      return res
-        .status(400)
-        .json({ message: "Пользователь с таким email уже существует" });
+      return res.status(400).json({
+        message: i18next.t("signup:userExists", { lng: language }),
+      });
     }
 
-    // Хешируем пароль
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-    // Генерируем 6-значный код
     const verificationCode = Math.floor(
       100000 + Math.random() * 900000
     ).toString();
-    // Устанавливаем время жизни кода (например, 1 час)
+
     const verificationTokenExpiresAt = new Date(Date.now() + 3600000);
 
-    // Создаем нового пользователя с кодом подтверждения
     const newUser = new User({
       email,
       password: hashedPassword,
       name,
-      verificationToken: verificationCode, // здесь хранится 6-значный код
+      verificationToken: verificationCode,
       verificationTokenExpiresAt: verificationTokenExpiresAt,
       isVerified: false,
     });
 
     await newUser.save();
 
-    // Отправляем email с 6-значным кодом
-    await sendVerificationCodeEmail(newUser.email, verificationCode);
+    await sendVerificationCodeEmail(newUser.email, verificationCode, language);
 
     return res.status(201).json({
-      message:
-        "Пользователь успешно зарегистрирован. Проверьте вашу почту для подтверждения email.",
+      message: i18next.t("signup:success", { lng: language }),
       user: {
         _id: newUser._id,
         email: newUser.email,
@@ -63,29 +60,45 @@ export const signup = async (req, res) => {
     });
   } catch (error) {
     console.error("Ошибка регистрации:", error);
-    return res.status(500).json({ message: "Ошибка сервера" });
+    return res
+      .status(500)
+      .json({ message: i18next.t("signup:serverError", { lng: language }) });
   }
 };
 
 export const verifyEmailCode = async (req, res) => {
   const { email, code } = req.body;
+  const language = req.query.lng || "tr";
 
   try {
+    await i18next.changeLanguage(language);
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(404).json({ message: "Пользователь не найден" });
+      return res.status(404).json({
+        message: i18next.t("verifyEmailCode:userNotFound", { lng: language }),
+      });
     }
 
     if (user.isVerified) {
-      return res.status(400).json({ message: "Email уже подтвержден" });
+      return res.status(400).json({
+        message: i18next.t("verifyEmailCode:emailAlreadyVerified", {
+          lng: language,
+        }),
+      });
     }
 
     if (user.verificationToken !== code) {
-      return res.status(400).json({ message: "Неверный код" });
+      return res.status(400).json({
+        message: i18next.t("verifyEmailCode:incorrectCode", {
+          lng: language,
+        }),
+      });
     }
 
     if (user.verificationTokenExpiresAt < new Date()) {
-      return res.status(400).json({ message: "Код истек, запросите новый" });
+      return res.status(400).json({
+        message: i18next.t("verifyEmailCode:codeExpired", { lng: language }),
+      });
     }
 
     user.isVerified = true;
@@ -95,83 +108,79 @@ export const verifyEmailCode = async (req, res) => {
 
     generateTokenAndSetCookie(res, user._id);
 
-    const transporter = nodemailer.createTransport({
-      service: "Gmail",
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-    });
-
-    const { subject, text, html } = welcomeEmailTemplate(
-      user.name || user.email
-    );
-
-    const mailOptions = {
-      from: process.env.EMAIL_USER,
-      to: email,
-      subject,
-      text,
-      html,
-    };
-
-    await transporter.sendMail(mailOptions);
+    await sendWelcomeEmail(user.email, user.name || user.email, language);
 
     res.json({
-      message: "Email успешно подтвержден. Приветственное письмо отправлено!",
+      message: i18next.t("verifyEmailCode:emailVerifiedSuccessfully", {
+        lng: language,
+      }),
     });
   } catch (error) {
     console.error("Ошибка подтверждения email:", error);
-    res.status(500).json({ message: "Ошибка сервера" });
+    res.status(500).json({
+      message: i18next.t("verifyEmailCode:serverError", { lng: language }),
+    });
   }
 };
 
 export const login = async (req, res) => {
   const { email, password } = req.body;
+  const language = req.query.lng || "tr";
 
   try {
-    // Находим пользователя по email
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(400).json({ message: "Неверный email или пароль" });
+      return res.status(400).json({
+        message: i18next.t("login:invalidCredentials", { lng: language }),
+      });
     }
 
-    // Проверяем корректность пароля
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.status(400).json({ message: "Неверный email или пароль" });
+      return res.status(400).json({
+        message: i18next.t("login:invalidCredentials", { lng: language }),
+      });
     }
 
-    // (Опционально) Если требуется подтверждение email, можно проверить флаг isVerified
     if (!user.isVerified) {
-      return res.status(400).json({ message: "Email не подтвержден" });
+      return res.status(400).json({
+        message: i18next.t("login:emailNotVerified", { lng: language }),
+      });
     }
 
-    // Генерируем JWT-токен и устанавливаем его в cookies
     const token = generateTokenAndSetCookie(res, user._id);
 
-    // Возвращаем ответ с токеном
-    return res.json({ message: "Успешный вход", token });
+    return res.json({
+      message: i18next.t("login:loginSuccessful", { lng: language }),
+      token,
+    });
   } catch (error) {
     console.error("Ошибка логина:", error);
-    return res.status(500).json({ message: "Ошибка сервера" });
+    return res.status(500).json({
+      message: i18next.t("login:serverError", { lng: language }),
+    });
   }
 };
 
 export const logout = async (req, res) => {
+  const language = req.query.lng || "tr";
   res.clearCookie("token");
-  res.status(200).json({ success: true, message: "Logged out successfully" });
+  res.status(200).json({
+    success: true,
+    message: i18next.t("logout:logoutSuccessful", { lng: language }),
+  });
 };
 
 export const forgotPassword = async (req, res) => {
   const { email } = req.body;
+  const language = req.query.lng || "tr";
 
   try {
     const user = await User.findOne({ email });
     if (!user) {
-      return res
-        .status(404)
-        .json({ message: "Пользователь с таким email не найден." });
+      return res.status(404).json({
+        message: i18next.t("forgotPassword:userNotFound", { lng: language }),
+      });
     }
 
     const token = crypto.randomBytes(20).toString("hex");
@@ -181,68 +190,59 @@ export const forgotPassword = async (req, res) => {
     user.resetPasswordExpiresAt = expiresAt;
     await user.save();
 
-    const transporter = nodemailer.createTransport({
-      service: "Gmail",
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-    });
-
     const resetUrl = `${process.env.BASE_URL}/reset-password/${token}`;
 
-    // Используем шаблон для письма
-    const { text, html } = resetPasswordEmailTemplate(resetUrl);
+    await sendResetPasswordEmail(user.email, resetUrl, language);
 
-    const mailOptions = {
-      from: process.env.EMAIL_USER,
-      to: email,
-      subject: "Сброс пароля",
-      text,
-      html,
-    };
-
-    // Отправляем письмо
-    await transporter.sendMail(mailOptions);
     res.json({
-      message: "Инструкции по сбросу пароля отправлены на вашу почту.",
+      message: i18next.t("forgotPassword:resetPasswordInstructions", {
+        lng: language,
+      }),
     });
   } catch (error) {
     console.error("Ошибка при запросе сброса пароля:", error);
-    res.status(500).json({ message: "Ошибка сервера." });
+    res.status(500).json({
+      message: i18next.t("forgotPassword:serverError", { lng: language }),
+    });
   }
 };
 
 export const resetPassword = async (req, res) => {
   const { token } = req.params;
   const { password } = req.body;
+  const language = req.query.lng || "tr";
 
   try {
-    // Ищем пользователя по токену и проверяем, что токен не истёк
     const user = await User.findOne({
       resetPasswordToken: token,
       resetPasswordExpiresAt: { $gt: new Date() },
     });
 
     if (!user) {
-      return res
-        .status(400)
-        .json({ message: "Токен недействителен или истёк." });
+      return res.status(400).json({
+        message: i18next.t("resetPassword:invalidTokenOrExpired", {
+          lng: language,
+        }),
+      });
     }
 
-    // Хешируем новый пароль
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-    // Обновляем пароль и очищаем поля токена
     user.password = hashedPassword;
     user.resetPasswordToken = undefined;
     user.resetPasswordExpiresAt = undefined;
     await user.save();
 
-    res.json({ message: "Пароль успешно изменён." });
+    res.json({
+      message: i18next.t("resetPassword:passwordChangedSuccessfully", {
+        lng: language,
+      }),
+    });
   } catch (error) {
     console.error("Ошибка при сбросе пароля:", error);
-    res.status(500).json({ message: "Ошибка сервера." });
+    res.status(500).json({
+      message: i18next.t("resetPassword:serverError", { lng: language }),
+    });
   }
 };

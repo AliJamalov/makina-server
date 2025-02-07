@@ -1,0 +1,5 @@
+{
+  "subject": "Email Verification",
+  "text": "Your 6-digit email verification code is: <p>{{code}}</p>",
+  "html": "<div style=\"font-family: Arial, sans-serif; font-size: 16px; color: #333; line-height: 1.5;\"><p>Your <strong style=\"color: #007BFF;\">6-digit</strong> email verification code is:</p><p style=\"font-size: 20px; font-weight: bold; margin: 10px 0;\">{{code}}</p><p>Please enter this code to verify your email address.</p></div>"
+}

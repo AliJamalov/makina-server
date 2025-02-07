@@ -1,0 +1,5 @@
+{
+  "missingFields": "Lütfen tüm zorunlu alanları doldurun.",
+  "userExists": "Bu e-posta adresi zaten kullanımda.",
+  "success": "Kullanıcı başarıyla kaydedildi. E-posta adresinizi doğrulamak için gelen kutunuzu kontrol edin."
+}
