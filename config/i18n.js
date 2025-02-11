@@ -12,7 +12,7 @@ i18next
   .use(middleware.LanguageDetector)
   .init({
     fallbackLng: "tr",
-    preload: ["en", "tr", "ar"],
+    preload: ["en", "tr", "ar", "ru"],
     ns: [
       "signup",
       "emailVerification",
@@ -24,7 +24,7 @@ i18next
       "verifyEmailCode",
       "welcomeEmailTemplate",
     ],
-    defaultNS: "signup",
+    defaultNS: "login",
     detection: {
       order: ["query", "cookie", "header"],
       lookupQuerystring: "lng",

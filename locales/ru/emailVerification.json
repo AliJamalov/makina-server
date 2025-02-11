@@ -1,0 +1,5 @@
+{
+  "subject": "Подтверждение email",
+  "text": "Ваш 6-значный код подтверждения email: <p>{{code}}</p>",
+  "html": "<div style=\"font-family: Arial, sans-serif; font-size: 16px; color: #333; line-height: 1.5;\"><p>Ваш <strong style=\"color: #007BFF;\">6-значный</strong> код подтверждения email:</p><p style=\"font-size: 20px; font-weight: bold; margin: 10px 0;\">{{code}}</p><p>Пожалуйста, введите этот код для подтверждения вашего email-адреса.</p></div>"
+}

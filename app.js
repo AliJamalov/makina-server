@@ -7,6 +7,9 @@ import i18next, { middleware } from "./config/i18n.js";
 
 // Routes
 import authRouter from "./routes/auth/auth.routes.js";
+import productRouter from "./routes/client/product.routes.js";
+import userRouter from "./routes/admin/user.routes.js";
+import categoryRouter from "./routes/admin/category.routes.js";
 
 const app = express();
 app.use(middleware.handle(i18next));
@@ -24,10 +27,15 @@ app.use(
   })
 );
 
-// client routes
-app.use("/api/auth", authRouter);
+// Admin endpoints
+app.use("/api/users", userRouter);
+app.use("/api/categories", categoryRouter);
 
-const PORT = process.env.PORT || 5000;
+// Client endpoints
+app.use("/api/auth", authRouter);
+app.use("/api/products", productRouter);
+
+const PORT = process.env.PORT || 5001;
 
 connectDB().then(() => {
   app.listen(PORT, () => {

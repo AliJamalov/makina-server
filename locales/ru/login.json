@@ -1,0 +1,6 @@
+{
+  "invalidCredentials": "Неверный email или пароль.",
+  "emailNotVerified": "Email не подтвержден.",
+  "loginSuccessful": "Вход выполнен успешно.",
+  "serverError": "Ошибка сервера."
+}

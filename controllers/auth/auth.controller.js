@@ -56,6 +56,7 @@ export const signup = async (req, res) => {
         _id: newUser._id,
         email: newUser.email,
         name: newUser.name,
+        role: newUser.role,
       },
     });
   } catch (error) {

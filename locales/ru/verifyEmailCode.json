@@ -1,0 +1,8 @@
+{
+  "userNotFound": "Пользователь не найден.",
+  "emailAlreadyVerified": "Email уже подтвержден.",
+  "incorrectCode": "Неверный код.",
+  "codeExpired": "Код истек, пожалуйста, запросите новый.",
+  "emailVerifiedSuccessfully": "Email успешно подтвержден. Отправлено приветственное письмо!",
+  "serverError": "Ошибка сервера."
+}
