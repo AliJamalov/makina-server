@@ -10,6 +10,9 @@ import authRouter from "./routes/auth/auth.routes.js";
 import productRouter from "./routes/client/product.routes.js";
 import userRouter from "./routes/admin/user.routes.js";
 import categoryRouter from "./routes/admin/category.routes.js";
+import aboutRouter from "./routes/admin/about.routes.js";
+import faqRouter from "./routes/admin/faq.routes.js";
+import contactRouter from "./routes/admin/contact.routes.js";
 
 const app = express();
 app.use(middleware.handle(i18next));
@@ -30,6 +33,9 @@ app.use(
 // Admin endpoints
 app.use("/api/users", userRouter);
 app.use("/api/categories", categoryRouter);
+app.use("/api/about", aboutRouter);
+app.use("/api/faq", faqRouter);
+app.use("/api/contact", contactRouter);
 
 // Client endpoints
 app.use("/api/auth", authRouter);

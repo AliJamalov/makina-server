@@ -3,31 +3,72 @@ import cloudinary from "../../config/cloudinary.js";
 
 export const createProduct = async (req, res) => {
   try {
-    const { title, description, images, category } = req.body;
-
-    if (!category || !title || !description || !images) {
+    const {
+      title,
+      description,
+      category,
+      model,
+      pumpType,
+      electricalSystem,
+      sprayGun,
+      images,
+      orderNumber,
+      workingPressure,
+      waterFlowRate,
+      power,
+      voltage,
+      rpm,
+      operation,
+      highPressureHose,
+      dimensions,
+      weight,
+      code,
+    } = req.body;
+    if (
+      !title ||
+      !description ||
+      !category ||
+      !model ||
+      !pumpType ||
+      !electricalSystem ||
+      !sprayGun ||
+      !images ||
+      !orderNumber ||
+      !workingPressure ||
+      !waterFlowRate ||
+      !power ||
+      !voltage ||
+      !rpm ||
+      !operation ||
+      !highPressureHose ||
+      !dimensions ||
+      !weight ||
+      !code
+    ) {
       return res.status(400).json({ message: "All fields are required" });
     }
 
     const newProduct = new Product({
-      title: {
-        en: title.en,
-        tr: title.tr,
-        ar: title.ar,
-      },
-      description: {
-        en: description.en,
-        tr: description.tr,
-        ar: description.ar,
-      },
-      category: {
-        en: category.en,
-        tr: category.tr,
-        ar: category.ar,
-      },
+      title,
+      description,
+      category,
+      model,
+      pumpType,
+      electricalSystem,
+      sprayGun,
       images,
+      orderNumber,
+      workingPressure,
+      waterFlowRate,
+      power,
+      voltage,
+      rpm,
+      operation,
+      highPressureHose,
+      dimensions,
+      weight,
+      code,
     });
-
     const product = await newProduct.save();
 
     res.status(201).json({
@@ -85,57 +126,82 @@ export const deleteProduct = async (req, res) => {
 export const updateProduct = async (req, res) => {
   try {
     const productId = req.params.id;
-    const { title, description, category, images } = req.body;
-
+    const {
+      title,
+      description,
+      category,
+      model,
+      pumpType,
+      electricalSystem,
+      sprayGun,
+      images,
+      orderNumber,
+      workingPressure,
+      waterFlowRate,
+      power,
+      voltage,
+      rpm,
+      operation,
+      highPressureHose,
+      dimensions,
+      weight,
+      code,
+    } = req.body;
     const product = await Product.findById(productId);
 
     if (!product) {
       return res.status(404).json({ message: "Product not found" });
     }
 
-    if (title) {
-      product.title.en = title.en || product.title.en;
-      product.title.tr = title.tr || product.title.tr;
-      product.title.ar = title.ar || product.title.ar;
-    }
+    const updateLocalizedField = (field, newValue) => {
+      if (newValue) {
+        product[field].en = newValue.en || product[field].en;
+        product[field].tr = newValue.tr || product[field].tr;
+        product[field].ar = newValue.ar || product[field].ar;
+        product[field].ru = newValue.ru || product[field].ru;
+      }
+    };
 
-    if (description) {
-      product.description.en = description.en || product.description.en;
-      product.description.tr = description.tr || product.description.tr;
-      product.description.ar = description.ar || product.description.ar;
-    }
-
-    if (category) {
-      product.category.en = category.en || product.category.en;
-      product.category.tr = category.tr || product.category.tr;
-      product.category.ar = category.ar || product.category.ar;
-    }
+    updateLocalizedField("title", title);
+    updateLocalizedField("description", description);
+    updateLocalizedField("category", category);
+    updateLocalizedField("model", model);
+    updateLocalizedField("pumpType", pumpType);
+    updateLocalizedField("electricalSystem", electricalSystem);
+    updateLocalizedField("sprayGun", sprayGun);
+    // Обновление остальных полей, если они есть
+    if (orderNumber) product.orderNumber = orderNumber;
+    if (workingPressure) product.workingPressure = workingPressure;
+    if (waterFlowRate) product.waterFlowRate = waterFlowRate;
+    if (power) product.power = power;
+    if (voltage) product.voltage = voltage;
+    if (rpm) product.rpm = rpm;
+    if (operation) product.operation = operation;
+    if (highPressureHose) product.highPressureHose = highPressureHose;
+    if (dimensions) product.dimensions = dimensions;
+    if (weight) product.weight = weight;
+    if (code) product.code = code;
 
     // Обработка изображений
     if (images) {
-      // Найдем изображения, которые нужно удалить
       const imagesToDelete = product.images.filter(
         (image) => !images.includes(image)
       );
 
-      // Удалим изображения из Cloudinary, которые больше не используются
       for (let image of imagesToDelete) {
-        // Используем регулярное выражение для извлечения правильного publicId
-        const regex = /\/v\d+\/(.*)\./; // Ищем все после /v<version>/ и до точки
+        const regex = /\/v\d+\/(.*)\./;
         const match = image.match(regex);
 
         if (match && match[1]) {
-          const publicId = match[1]; // Извлекаем publicId
-
+          const publicId = match[1];
           try {
-            const result = await cloudinary.uploader.destroy(publicId);
+            await cloudinary.uploader.destroy(publicId);
           } catch (err) {
             console.error("Error deleting image from Cloudinary:", err);
           }
         }
       }
 
-      // Обновим список изображений
       product.images = images;
     }
 

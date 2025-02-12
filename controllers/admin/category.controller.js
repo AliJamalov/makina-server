@@ -3,7 +3,7 @@ import Category from "../../models/category.model.js";
 export const createCategory = async (req, res) => {
   try {
     const { name } = req.body;
-    if (!name || !name.tr || !name.en || !name.ar) {
+    if (!name || !name.tr || !name.en || !name.ar || !name.ru) {
       return res
         .status(400)
         .json({ message: "All language fields are required." });
@@ -42,7 +42,7 @@ export const getCategoryById = async (req, res) => {
 export const updateCategory = async (req, res) => {
   try {
     const { name } = req.body;
-    if (!name || !name.tr || !name.en || !name.ar) {
+    if (!name || !name.tr || !name.en || !name.ar || !name.ru) {
       return res
         .status(400)
         .json({ message: "All language fields are required." });
