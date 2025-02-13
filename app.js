@@ -13,6 +13,8 @@ import categoryRouter from "./routes/admin/category.routes.js";
 import aboutRouter from "./routes/admin/about.routes.js";
 import faqRouter from "./routes/admin/faq.routes.js";
 import contactRouter from "./routes/admin/contact.routes.js";
+import addressRouter from "./routes/admin/address.routes.js";
+import heroSectionRouter from "./routes/admin/heroSection.routes.js";
 
 const app = express();
 app.use(middleware.handle(i18next));
@@ -36,6 +38,8 @@ app.use("/api/categories", categoryRouter);
 app.use("/api/about", aboutRouter);
 app.use("/api/faq", faqRouter);
 app.use("/api/contact", contactRouter);
+app.use("/api/address", addressRouter);
+app.use("/api/hero-section", heroSectionRouter);
 
 // Client endpoints
 app.use("/api/auth", authRouter);

@@ -40,7 +40,7 @@ export const updateFaq = async (req, res) => {
     if (!updatedFaq) {
       return res.status(404).json({ message: "FAQ не найден" });
     }
-    res.json(updatedFaq);
+    res.status(200).json(updatedFaq);
   } catch (error) {
     res.status(500).json({ message: "Ошибка сервера" });
   }
@@ -52,7 +52,7 @@ export const deleteFaq = async (req, res) => {
     if (!deletedFaq) {
       return res.status(404).json({ message: "FAQ не найден" });
     }
-    res.json({ message: "FAQ удален" });
+    res.status(200).json({ message: "FAQ удален" });
   } catch (error) {
     res.status(500).json({ message: "Ошибка сервера" });
   }
