@@ -154,6 +154,7 @@ export const login = async (req, res) => {
     return res.status(200).json({
       message: i18next.t("login:loginSuccessful", { lng: language }),
       token,
+      user,
     });
   } catch (error) {
     console.error("Ошибка логина:", error);
