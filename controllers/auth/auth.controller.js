@@ -252,11 +252,14 @@ export const resetPassword = async (req, res) => {
 export const checkAuth = async (req, res) => {
   try {
     const user = await User.findById(req.userId).select("-password");
+
     if (!user) {
       return res
         .status(400)
         .json({ success: false, message: "User not found" });
     }
+
+    generateTokenAndSetCookie(res, user._id);
 
     res.status(200).json({ success: true, user });
   } catch (error) {

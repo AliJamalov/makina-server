@@ -2,12 +2,22 @@ import Address from "../../models/address.model.js";
 
 export const getAddresses = async (req, res) => {
   try {
-    const { page = 1, limit = 15 } = req.query;
+    const { lng = "tr", page = 1, limit = 15, search = "" } = req.query;
     const skip = (parseInt(page) - 1) * parseInt(limit);
 
+    // Динамический поиск по указанному языку
+    const query = search
+      ? {
+          $or: [
+            { [`city.${lng}`]: { $regex: search, $options: "i" } },
+            { [`address.${lng}`]: { $regex: search, $options: "i" } },
+          ],
+        }
+      : {};
+
     const [addresses, total] = await Promise.all([
-      Address.find().skip(skip).limit(parseInt(limit)),
-      Address.countDocuments(),
+      Address.find(query).skip(skip).limit(parseInt(limit)),
+      Address.countDocuments(query),
     ]);
 
     res.status(200).json({

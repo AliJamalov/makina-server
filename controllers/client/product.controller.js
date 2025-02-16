@@ -2,7 +2,13 @@ import Product from "../../models/product.model.js";
 
 export const getFilteredProducts = async (req, res) => {
   try {
-    const { page = 1, limit = 15, search = "", lng = "tr" } = req.query;
+    const {
+      page = 1,
+      limit = 12,
+      search = "",
+      lng = "tr",
+      category,
+    } = req.query;
 
     const pageInt = parseInt(page);
     const limitInt = parseInt(limit);
@@ -15,15 +21,21 @@ export const getFilteredProducts = async (req, res) => {
 
     const skip = (pageInt - 1) * limitInt;
 
-    // Формируем фильтр для поиска по полю title для указанного языка
-    const searchFilter = search
-      ? { [`title.${lng}`]: { $regex: search, $options: "i" } }
-      : {};
+    // Формируем фильтр для поиска
+    const filters = {};
 
-    // Получаем данные с пагинацией и фильтром
+    if (search) {
+      filters[`title.${lng}`] = { $regex: search, $options: "i" };
+    }
+
+    if (category) {
+      filters[`category.${lng}`] = category; // Если категория зависит от языка
+    }
+
+    // Получаем данные с фильтрацией и пагинацией
     const [products, total] = await Promise.all([
-      Product.find(searchFilter).skip(skip).limit(limitInt),
-      Product.countDocuments(searchFilter),
+      Product.find(filters).skip(skip).limit(limitInt),
+      Product.countDocuments(filters),
     ]);
 
     res.status(200).json({
