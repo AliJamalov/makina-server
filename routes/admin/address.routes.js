@@ -6,6 +6,8 @@ import {
   updateAddress,
   deleteAddress,
 } from "../../controllers/admin/address.controller.js";
+import { verifyToken } from "../../middlewares/verifyToken.js";
+import { verifyAdmin } from "../../middlewares/verifyAdmin.js";
 
 const router = express.Router();
 
@@ -13,10 +15,10 @@ router.get("/", getAddresses);
 
 router.get("/:id", getAddressById);
 
-router.post("/", createAddress);
+router.post("/", verifyToken, verifyAdmin, createAddress);
 
-router.patch("/:id", updateAddress);
+router.patch("/:id", verifyToken, verifyAdmin, updateAddress);
 
-router.delete("/:id", deleteAddress);
+router.delete("/:id", verifyToken, verifyAdmin, deleteAddress);
 
 export default router;

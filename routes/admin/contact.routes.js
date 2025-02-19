@@ -6,6 +6,8 @@ import {
   updateContact,
   deleteContact,
 } from "../../controllers/admin/contact.controller.js";
+import { verifyToken } from "../../middlewares/verifyToken.js";
+import { verifyAdmin } from "../../middlewares/verifyAdmin.js";
 
 const router = express.Router();
 
@@ -15,7 +17,7 @@ router.get("/", getContacts);
 
 router.get("/:id", getContactById);
 
-router.patch("/:id", updateContact);
+router.patch("/:id", verifyToken, verifyAdmin, updateContact);
 
 router.delete("/:id", deleteContact);
 

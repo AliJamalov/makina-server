@@ -1,23 +1,28 @@
 import bcrypt from "bcryptjs";
 import crypto from "crypto";
-
 import { generateTokenAndSetCookie } from "../../utils/generateTokenAndSetCookie.js";
 import { sendVerificationCodeEmail } from "../../utils/sendEmails.js";
 import { sendWelcomeEmail } from "../../utils/sendEmails.js";
 import { sendResetPasswordEmail } from "../../utils/sendEmails.js";
-
+import { validateEmail } from "../../utils/validateEmail.js";
 import { User } from "../../models/user.model.js";
-
 import i18next from "../../config/i18n.js";
 
 export const signup = async (req, res) => {
   try {
-    const { email, password, name } = req.body;
+    const { email, password, name, phone } = req.body;
     const language = req.query.lng || "tr";
 
-    if (!email || !password || !name) {
+    if (!email || !password || !name || !phone) {
       return res.status(400).json({
         message: i18next.t("signup:missingFields", { lng: language }),
+      });
+    }
+
+    const isEmailValid = await validateEmail(email);
+    if (!isEmailValid) {
+      return res.status(400).json({
+        message: i18next.t("signup:invalidEmail", { lng: language }),
       });
     }
 
@@ -39,6 +44,7 @@ export const signup = async (req, res) => {
 
     const newUser = new User({
       email,
+      phone,
       password: hashedPassword,
       name,
       verificationToken: verificationCode,
@@ -48,13 +54,25 @@ export const signup = async (req, res) => {
 
     await newUser.save();
 
-    await sendVerificationCodeEmail(newUser.email, verificationCode, language);
+    try {
+      await sendVerificationCodeEmail(
+        newUser.email,
+        verificationCode,
+        language
+      );
+    } catch (emailError) {
+      console.error("Ошибка отправки письма:", emailError);
+      return res.status(500).json({
+        message: i18next.t("signup:emailError", { lng: language }),
+      });
+    }
 
     return res.status(201).json({
       message: i18next.t("signup:success", { lng: language }),
       user: {
         _id: newUser._id,
         email: newUser.email,
+        phone: newUser.phone,
         name: newUser.name,
         role: newUser.role,
       },
