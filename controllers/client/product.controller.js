@@ -25,7 +25,10 @@ export const getFilteredProducts = async (req, res) => {
     const filters = {};
 
     if (search) {
-      filters[`title.${lng}`] = { $regex: search, $options: "i" };
+      filters.$or = [
+        { [`title.${lng}`]: { $regex: search, $options: "i" } },
+        { code: { $regex: search, $options: "i" } },
+      ];
     }
 
     if (category) {

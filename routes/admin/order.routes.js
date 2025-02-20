@@ -3,18 +3,21 @@ import {
   createOrder,
   deleteOrder,
   getOrders,
-  getOrdersByUserId,
+  getOrdersByUserIdForAdmin,
+  getUserOrders,
 } from "../../controllers/client/order.controller.js";
 import { verifyToken } from "../../middlewares/verifyToken.js";
 import { verifyAdmin } from "../../middlewares/verifyAdmin.js";
 
 const router = express.Router();
 
-router.post("/", verifyToken, verifyAdmin, createOrder);
+router.post("/", verifyToken, createOrder);
 
 router.get("/", getOrders);
 
-router.get("/:userId", getOrdersByUserId);
+router.get("/user-orders", verifyToken, getUserOrders);
+
+router.get("/:userId", getOrdersByUserIdForAdmin);
 
 router.delete("/:id", verifyToken, verifyAdmin, deleteOrder);
 

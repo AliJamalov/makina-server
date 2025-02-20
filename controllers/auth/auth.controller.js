@@ -4,7 +4,6 @@ import { generateTokenAndSetCookie } from "../../utils/generateTokenAndSetCookie
 import { sendVerificationCodeEmail } from "../../utils/sendEmails.js";
 import { sendWelcomeEmail } from "../../utils/sendEmails.js";
 import { sendResetPasswordEmail } from "../../utils/sendEmails.js";
-import { validateEmail } from "../../utils/validateEmail.js";
 import { User } from "../../models/user.model.js";
 import i18next from "../../config/i18n.js";
 
@@ -16,13 +15,6 @@ export const signup = async (req, res) => {
     if (!email || !password || !name || !phone) {
       return res.status(400).json({
         message: i18next.t("signup:missingFields", { lng: language }),
-      });
-    }
-
-    const isEmailValid = await validateEmail(email);
-    if (!isEmailValid) {
-      return res.status(400).json({
-        message: i18next.t("signup:invalidEmail", { lng: language }),
       });
     }
 

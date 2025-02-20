@@ -12,10 +12,6 @@ const OrderSchema = new mongoose.Schema(
       ref: "Product",
       required: true,
     },
-    title: {
-      type: String,
-      required: true,
-    },
     message: {
       type: String,
       required: true,

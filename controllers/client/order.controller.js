@@ -1,24 +1,15 @@
 import Order from "../../models/order.model.js";
 
 export const createOrder = async (req, res) => {
-  const { productId, title, message } = req.body;
+  const { productId, message } = req.body;
   const userId = req.userId;
 
   try {
-    if (!productId || !title || !message) {
+    if (!userId || !productId || !message) {
       return res.status(400).json({ message: "Invalid data" });
     }
 
-    if (!userId)
-      return res.status(400).json({ message: "User ID is required" });
-
-    const order = new Order({
-      userId,
-      productId,
-      title,
-      message,
-    });
-
+    const order = new Order({ userId, productId, message });
     await order.save();
 
     return res
@@ -83,9 +74,9 @@ export const getOrders = async (req, res) => {
           orders: {
             _id: 1,
             message: 1,
-            title: 1,
             "productDetails.title": 1,
             "productDetails.images": 1,
+            "productDetails.code": 1,
           },
         },
       },
@@ -102,12 +93,12 @@ export const getOrders = async (req, res) => {
   }
 };
 
-export const getOrdersByUserId = async (req, res) => {
+export const getOrdersByUserIdForAdmin = async (req, res) => {
   const { userId } = req.params;
   try {
     // Получаем все заказы для конкретного пользователя и популяем информацию о продукте
     const orders = await Order.find({ userId })
-      .populate("productId", "title images") // Получаем поля title и image из модели Product
+      .populate("productId", "title images code") // Получаем поля title и image из модели Product
       .exec();
 
     if (orders.length === 0) {
@@ -133,6 +124,24 @@ export const deleteOrder = async (req, res) => {
     }
 
     return res.status(200).json({ message: "Order deleted successfully" });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const getUserOrders = async (req, res) => {
+  const userId = req.userId;
+  try {
+    const orders = await Order.find({ userId })
+      .populate("productId", "title images")
+      .exec();
+
+    if (orders.length === 0) {
+      return res.status(404).json({ message: "No orders found for this user" });
+    }
+
+    return res.status(200).json({ orders });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Internal server error" });
