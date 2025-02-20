@@ -125,6 +125,7 @@ export const verifyEmailCode = async (req, res) => {
       message: i18next.t("verifyEmailCode:emailVerifiedSuccessfully", {
         lng: language,
       }),
+      user,
     });
   } catch (error) {
     console.error("Ошибка подтверждения email:", error);
