@@ -19,6 +19,6 @@ router.get("/user-orders", verifyToken, getUserOrders);
 
 router.get("/:userId", getOrdersByUserIdForAdmin);
 
-router.delete("/:id", verifyToken, verifyAdmin, deleteOrder);
+router.delete("/:userId", verifyToken, verifyAdmin, deleteOrder);
 
 export default router;

@@ -114,19 +114,21 @@ export const getOrdersByUserIdForAdmin = async (req, res) => {
 };
 
 export const deleteOrder = async (req, res) => {
-  const { id } = req.params;
+  const { userId } = req.params;
 
   try {
-    const order = await Order.findByIdAndDelete(id);
+    const result = await Order.deleteMany({ userId });
 
-    if (!order) {
-      return res.status(404).json({ message: "Order not found" });
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ message: "Sipariş bulunamadı" });
     }
 
-    return res.status(200).json({ message: "Order deleted successfully" });
+    return res
+      .status(200)
+      .json({ message: "Kullanıcının tüm siparişleri silindi" });
   } catch (error) {
-    console.error(error);
-    return res.status(500).json({ message: "Internal server error" });
+    console.error("Hata:", error);
+    return res.status(500).json({ message: "Sunucu hatası" });
   }
 };
 

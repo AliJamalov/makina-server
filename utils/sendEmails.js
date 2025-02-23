@@ -27,9 +27,10 @@ export const sendVerificationCodeEmail = async (
     };
 
     await transporter.sendMail(mailOptions);
+    return true;
   } catch (error) {
-    console.error("Ошибка при отправке email с кодом:", error);
-    throw error;
+    console.error("Ошибка при отправке email:", error.message);
+    return false;
   }
 };
 
