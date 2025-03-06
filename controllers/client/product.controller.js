@@ -2,21 +2,13 @@ import Product from "../../models/product.model.js";
 
 export const getFilteredProducts = async (req, res) => {
   try {
-    const {
-      page = 1,
-      limit = 12,
-      search = "",
-      lng = "tr",
-      category,
-    } = req.query;
+    const { page = 1, limit = 12, search = "", lng = "tr", category } = req.query;
 
     const pageInt = parseInt(page);
     const limitInt = parseInt(limit);
 
     if (isNaN(pageInt) || pageInt <= 0 || isNaN(limitInt) || limitInt <= 0) {
-      return res
-        .status(400)
-        .json({ message: "Некорректные параметры пагинации" });
+      return res.status(400).json({ message: "Некорректные параметры пагинации" });
     }
 
     const skip = (pageInt - 1) * limitInt;

@@ -4,6 +4,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import { connectDB } from "./config/db.js";
 import i18next, { middleware } from "./config/i18n.js";
+import { keepServerAwake } from "./utils/keepServerAwake.js";
 
 // Routes
 import authRouter from "./routes/auth/auth.routes.js";
@@ -54,3 +55,5 @@ connectDB().then(() => {
     console.log(`Server listening on ${PORT}`);
   });
 });
+
+keepServerAwake();
