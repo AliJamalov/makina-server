@@ -2,7 +2,7 @@ import fetch from "node-fetch";
 
 // Функция для отправки запросов на сервер, чтобы избежать перехода в спящий режим
 export function keepServerAwake() {
-  const url = "https://your-app-name.onrender.com"; // Замените на URL вашего приложения на Render
+  const url = "https://makina-server.onrender.com"; // Замените на URL вашего приложения на Render
 
   setInterval(async () => {
     try {
