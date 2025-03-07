@@ -27,7 +27,7 @@ dotenv.config();
 
 app.use(
   cors({
-    origin: ["http://localhost:5173", "https://makina-az-bc8o.vercel.app"],
+    origin: ["http://localhost:5173", "https://makina-az.vercel.app"],
     methods: ["GET", "POST", "DELETE", "PATCH"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
