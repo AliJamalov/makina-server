@@ -28,9 +28,7 @@ export const signup = async (req, res) => {
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-    const verificationCode = Math.floor(
-      100000 + Math.random() * 900000
-    ).toString();
+    const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
 
     const verificationTokenExpiresAt = new Date(Date.now() + 3600000);
 
@@ -47,11 +45,7 @@ export const signup = async (req, res) => {
     await newUser.save();
 
     try {
-      await sendVerificationCodeEmail(
-        newUser.email,
-        verificationCode,
-        language
-      );
+      await sendVerificationCodeEmail(newUser.email, verificationCode, language);
     } catch (emailError) {
       console.error("Ошибка отправки письма:", emailError);
       return res.status(500).json({
@@ -71,9 +65,7 @@ export const signup = async (req, res) => {
     });
   } catch (error) {
     console.error("Ошибка регистрации:", error);
-    return res
-      .status(500)
-      .json({ message: i18next.t("signup:serverError", { lng: language }) });
+    return res.status(500).json({ message: i18next.t("signup:serverError", { lng: language }) });
   }
 };
 
@@ -177,7 +169,12 @@ export const login = async (req, res) => {
 
 export const logout = async (req, res) => {
   const language = req.query.lng || "tr";
-  res.clearCookie("token");
+  res.clearCookie("token", {
+    httpOnly: true,
+    sameSite: "None", // Если у вас кросс-доменные запросы
+    secure: true, // Для HTTPS
+  });
+
   res.status(200).json({
     success: true,
     message: i18next.t("logout:logoutSuccessful", { lng: language }),
@@ -265,9 +262,7 @@ export const checkAuth = async (req, res) => {
     const user = await User.findById(req.userId).select("-password");
 
     if (!user) {
-      return res
-        .status(400)
-        .json({ success: false, message: "User not found" });
+      return res.status(400).json({ success: false, message: "User not found" });
     }
 
     generateTokenAndSetCookie(res, user._id);
