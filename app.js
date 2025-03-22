@@ -55,5 +55,3 @@ connectDB().then(() => {
     console.log(`Server listening on ${PORT}`);
   });
 });
-
-keepServerAwake();
